@@ -24,7 +24,7 @@ Los contenidos de esta evaluación corresponden a los temas de R revisados en el
 
 -   Tipos de datos
 
--   Instalación y uso de librerías. 
+-   Instalación y uso de librerías.
 
 -   Estructuras de control
 
@@ -42,7 +42,7 @@ Esta permitido consultar todo material disponible: diapositivas, google...Sin em
 
 Ustedes estan utilizando el R Markdown. Las instruciones son:
 
--   Creen una carpeta en su computador con el nombre "GBI6_ExamenFinal" donde guarden este cuaderno .Rmd. 
+-   Creen una carpeta en su computador con el nombre "GBI6_ExamenFinal" donde guarden este cuaderno .Rmd.
 
 - Cree un subdirectorio de nombre "data" donde guarde la data que van a utilizar.
 
@@ -58,24 +58,24 @@ Ustedes estan utilizando el R Markdown. Las instruciones son:
 
 -   Es recomendable crear una copia de este script guía.
 
--   Genere controles de la versión para cada una de las preguntas con la leyenda "Nombre Apellido, resuelve el ejercicio XX". 
+-   Genere controles de la versión para cada una de las preguntas con la leyenda "Nombre Apellido, resuelve el ejercicio XX".
 
 - Copie y peque la dirección de su repositorio de GitHub en la actividad **"ExamenFinal"**.
 
 -   Asegúrese de responder explícitamente cada una de las preguntas.
 
-Para comprender la data de esta evaluación se requiere conocer el significado de algunos acrónimos de los tipos de cancer como indica el [Broad Institute Cancer Names](https://gdac.broadinstitute.org/). Asimismo revise la información de ayuda para ```expresionsTCGA```. La data contiene las columnas: 
+Para comprender la data de esta evaluación se requiere conocer el significado de algunos acrónimos de los tipos de cancer como indica el [Broad Institute Cancer Names](https://gdac.broadinstitute.org/). Asimismo revise la información de ayuda para ```expresionsTCGA```. La data contiene las columnas:
 
-- **bcr_patient_barcode**: es el identificador del paciente. 
+- **bcr_patient_barcode**: es el identificador del paciente.
 
-- **dataset**: es el identificador del tipo de cancer del paciente. 
+- **dataset**: es el identificador del tipo de cancer del paciente.
 
-- **resto de columnas**: nivees de expresión de los diferentes mRNA de los genes que están como nombre de columna (para este análisis se han seleccionado solamente 7 de ellos). 
+- **resto de columnas**: nivees de expresión de los diferentes mRNA de los genes que están como nombre de columna (para este análisis se han seleccionado solamente 7 de ellos).
 
 # PREGUNTAS
 ## **Pregunta 1: MANIPULACIÓN DE DATOS [4 PUNTOS]**
 
-### [0.5 PUNTOS] 1.1 Defina su directorio de trabajo. 
+### [0.5 PUNTOS] 1.1 Defina su directorio de trabajo.
 ```{r wd}
 getwd()
 ```
@@ -98,7 +98,7 @@ long_df <- function(datos){
 ```
 
 
-### [1 PUNTO] Genere la data ```df_long``` utilizandola función ```long_df```. 
+### [1 PUNTO] Genere la data ```df_long``` utilizandola función ```long_df```.
 La tabla resultante tendrá tres columnas: ```dataset, gen, expresion_level```.  
 ```{r df_long}
 df_long <- long_df(df)
@@ -108,24 +108,24 @@ df_long
 
 ```
 
-### [0.5 PUNTOS] 1.5 A partir de la data ```df_long```, genere un **Descriptive table** (librería ```sjPlot```) y guárdelo en el subdirectorio "result"  con el nombre **mRNA_expr_summary.doc** (previamente debe seleccionar las celdas adecuadas con funciones de la librería ```dplyr``` en conjunto con el operador ```%>%```). 
+### [0.5 PUNTOS] 1.5 A partir de la data ```df_long```, genere un **Descriptive table** (librería ```sjPlot```) y guárdelo en el subdirectorio "result"  con el nombre **mRNA_expr_summary.doc** (previamente debe seleccionar las celdas adecuadas con funciones de la librería ```dplyr``` en conjunto con el operador ```%>%```).
 ```{r desc_table}
 library(sjPlot)
 library(sjmisc)
 library(officer)
-library(flextable)
 
 Descriptive_Table <- df_long %>% group_by(dataset,gen) %>% descr(out="viewer")
 dt <- data.frame(Descriptive_Table)
-write.table(x = dt, file = "results/mRNA_expr_summary.doc", sep = ",", 
-            row.names = TRUE, col.names = TRUE)
+Descriptive_Table
+capture.output(Descriptive_Table[1:42], file="results/mRNA_expr_summary.doc"))
+
 ```
 
-### [0.5 PUNTOS] 1.6 Interprete los resultados de la tabla resultante de la sección 1.5. 
+### [0.5 PUNTOS] 1.6 Interprete los resultados de la tabla resultante de la sección 1.5.
 
 
 ```{tex}
-# Escriba aquí su interpretación 
+# Escriba aquí su interpretación
 
 ```
 
@@ -133,34 +133,26 @@ write.table(x = dt, file = "results/mRNA_expr_summary.doc", sep = ",",
 
 ## **Pregunta 2 VISUALIZACION DE DATOS  [5 PUNTOS]**
 
-Para esta pregunta tiene que utilizar la data ```df_long```. 
+Para esta pregunta tiene que utilizar la data ```df_long```.
 
 ### [1 PUNTO] 2.1 Cree la funcion ```tcga_boxplots``` para visualizar boxplots y jitterplots. El único parámetro de la función es ```dataset```. La función debe crear un boxplot de los niveles de expresión para cada gen.
 
 ```{r}
-library(dplyr)
-library(ggplot2)
-tcga_boxplots <- function(data){
-  cd <- df_long %>% filter (dataset == data)
-  dc <- cd %>% ggplot(aes(x=gen,y=expresion_level, color = gen)) +
-  geom_boxplot() + geom_jitter ()
-}
+
 
 ```
 
-### [0.5 PUNTOS] 2.2 Utilizando la función ```lapply()``` genera la lista ```cancertype_boxplots``` con las gráficas para cada tipo de cancer (cada tipo de dataset). 
+### [0.5 PUNTOS] 2.2 Utilizando la función ```lapply()``` genera la lista ```cancertype_boxplots``` con las gráficas para cada tipo de cancer (cada tipo de dataset).
 ```{r list_boxplots}
-# Escriba el código para generar la lista. 
-tipo_decancer <- c("BRCA","OV","LUSC","KIPAN","KIRP","UCEC")
-cancertype_boxplots <- lapply(tipo_decancer, tcga_boxplots)
-cancertype_boxplots
+# Escriba el código para generar la lista.
+
 
 
 ```
 
-### [0.5 PUNTOS] 2.3 Guarde en el subdirectorio ```result``` el tercer plot de la lista ```cancertype_boxplots``` con el nombre ```boxplot3.png```. La definición de a figura debe ser de 300dpi. 
+### [0.5 PUNTOS] 2.3 Guarde en el subdirectorio ```result``` el tercer plot de la lista ```cancertype_boxplots``` con el nombre ```boxplot3.png```. La definición de a figura debe ser de 300dpi.
 ```{r boxplot3}
-# Escriba el código para guardar la tercera figura de la lista. 
+# Escriba el código para guardar la tercera figura de la lista.
 
 
 ```
@@ -177,14 +169,14 @@ cancertype_boxplots
 
 ### [0.5 PUNTOS] 2.5. Utilizando la función ```lapply()``` genera la lista ```reg_genplots``` con las gráficas para cada par de genes posibles. Recuerde que tiene 7 tipos de genes, se debe tener todas las combinaciones posibles por pares de genes (combinatoria sin repetición).
 ```{r list_regplots}
-# Escriba el código para generar la lista. 
+# Escriba el código para generar la lista.
 
 ```
 
 
-### [0.5 PUNTOS] 2.6. Guarde en el subdirectorio ```result``` el onceavo plot de la lista ```reg_genplots``` con el nombre ```regresion11.pdf```. La definición de a figura debe ser de 300dpi. 
+### [0.5 PUNTOS] 2.6. Guarde en el subdirectorio ```result``` el onceavo plot de la lista ```reg_genplots``` con el nombre ```regresion11.pdf```. La definición de a figura debe ser de 300dpi.
 ```{r reg11}
-# Escriba el código para guardar el onceavo plot. 
+# Escriba el código para guardar el onceavo plot.
 
 ```
 
@@ -196,5 +188,4 @@ cancertype_boxplots
 
 ```
 
-## 3. CONTROL DE LA VERSIÓN [1 PUNTO]. Se verficará en ell repositorio de GitHub. 
-
+## 3. CONTROL DE LA VERSIÓN [1 PUNTO]. Se verficará en ell repositorio de GitHub.
