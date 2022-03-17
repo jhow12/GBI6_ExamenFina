@@ -138,22 +138,29 @@ Para esta pregunta tiene que utilizar la data ```df_long```.
 ### [1 PUNTO] 2.1 Cree la funcion ```tcga_boxplots``` para visualizar boxplots y jitterplots. El único parámetro de la función es ```dataset```. La función debe crear un boxplot de los niveles de expresión para cada gen.
 
 ```{r}
-
+library(dplyr)
+library(ggplot2)
+tcga_boxplots <- function(data){
+  filtro <- df_long %>% filter (dataset == data)
+  ggplot <- filtro %>% ggplot(aes(x=gen, y=expression_level, color = gen)) +
+    labs(x="Gen", y = "Nivel de expresion") + geom_boxplot() + geom_jitter (alpha=0.3, size = 0.2)
+}
 
 ```
 
 ### [0.5 PUNTOS] 2.2 Utilizando la función ```lapply()``` genera la lista ```cancertype_boxplots``` con las gráficas para cada tipo de cancer (cada tipo de dataset).
 ```{r list_boxplots}
 # Escriba el código para generar la lista.
-
-
+cancertype_boxplots <- lapply(df_long$dataset, tcga_boxplots)
+cancertype_boxplots[1:6]
 
 ```
 
 ### [0.5 PUNTOS] 2.3 Guarde en el subdirectorio ```result``` el tercer plot de la lista ```cancertype_boxplots``` con el nombre ```boxplot3.png```. La definición de a figura debe ser de 300dpi.
 ```{r boxplot3}
 # Escriba el código para guardar la tercera figura de la lista.
-
+cancertype_boxplots[3]
+ggsave("results/boxplot3.png", dpi = 300) 
 
 ```
 
