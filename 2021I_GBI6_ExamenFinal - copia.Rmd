@@ -127,6 +127,8 @@ capture.output(Descriptive_Table[1:42], file="results/mRNA_expr_summary.doc"))
 ```{tex}
 # Escriba aquí su interpretación
 
+##Esta tabla contiene los resumenes estadisticos de cada base de datos con su respectivo gen, la #columna "n" la cantidad de observaciones de la muestra que existe en nuestra base de datos; Como un ejemplo en la tabla 1 vemos que existen 590 individuos que presentan el gen GATA3. En la misma tabla verificamos que su desviacion estandar es de 1.8 y su media es de 1.10
+
 ```
 
 
@@ -160,7 +162,7 @@ cancertype_boxplots[1:6]
 ```{r boxplot3}
 # Escriba el código para guardar la tercera figura de la lista.
 cancertype_boxplots[3]
-ggsave("results/boxplot3.png", dpi = 300) 
+ggsave("results/boxplot3.png", dpi = 300)
 
 ```
 
